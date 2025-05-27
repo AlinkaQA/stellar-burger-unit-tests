@@ -1,19 +1,19 @@
 package praktikum;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
 import static org.junit.Assert.assertEquals;
 
-import praktikum.Ingredient;
-import praktikum.IngredientType;
-
-@RunWith(org.junit.runners.Parameterized.class)
+@RunWith(Parameterized.class)
 public class IngredientTest {
 
     private final IngredientType type;
     private final String name;
     private final float price;
+    private Ingredient ingredient;
 
     public IngredientTest(IngredientType type, String name, float price) {
         this.type = type;
@@ -21,7 +21,12 @@ public class IngredientTest {
         this.price = price;
     }
 
-    @Parameterized.Parameters
+    @Before
+    public void setUp() {
+        ingredient = new Ingredient(type, name, price);
+    }
+
+    @Parameterized.Parameters(name = "Ingredient[type={0}, name={1}, price={2}]")
     public static Object[][] testData() {
         return new Object[][] {
                 {IngredientType.SAUCE, "BBQ", 99.99f},
@@ -30,20 +35,17 @@ public class IngredientTest {
     }
 
     @Test
-    public void getNameReturnsCorrectValue() {
-        Ingredient ingredient = new Ingredient(type, name, price);
-        assertEquals(name, ingredient.getName());
+    public void testGetNameReturnsCorrectValue() {
+        assertEquals("Ingredient name should match", name, ingredient.getName());
     }
 
     @Test
-    public void getPriceReturnsCorrectValue() {
-        Ingredient ingredient = new Ingredient(type, name, price);
-        assertEquals(price, ingredient.getPrice(), 0.001f);
+    public void testGetPriceReturnsCorrectValue() {
+        assertEquals("Ingredient price should match", price, ingredient.getPrice(), 0.001f);
     }
 
     @Test
-    public void getTypeReturnsCorrectValue() {
-        Ingredient ingredient = new Ingredient(type, name, price);
-        assertEquals(type, ingredient.getType());
+    public void testGetTypeReturnsCorrectValue() {
+        assertEquals("Ingredient type should match", type, ingredient.getType());
     }
 }

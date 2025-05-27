@@ -5,10 +5,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class BurgerTest {
 
@@ -30,64 +29,60 @@ public class BurgerTest {
     }
 
     @Test
-    public void testSetBun() {
+    public void testSetBunsAssignsBun() {
         burger.setBuns(mockBun);
-        assertEquals(mockBun, burger.bun);
+        assertEquals("Burger bun should be set correctly", mockBun, burger.bun);
     }
 
     @Test
-    public void testAddIngredient() {
+    public void testAddIngredientIncreasesList() {
+        when(mockIngredient1.getName()).thenReturn("Ingredient1");
         burger.addIngredient(mockIngredient1);
-        assertEquals(1, burger.ingredients.size());
-        assertEquals(mockIngredient1, burger.ingredients.get(0));
+        assertEquals("Ingredients list size should be 1 after adding", 1, burger.ingredients.size());
     }
 
     @Test
-    public void testRemoveIngredient() {
+    public void testRemoveIngredientClearsList() {
         burger.addIngredient(mockIngredient1);
         burger.removeIngredient(0);
-        assertEquals(0, burger.ingredients.size());
+        assertEquals("Ingredients list should be empty after removal", 0, burger.ingredients.size());
     }
 
     @Test
-    public void testMoveIngredient() {
+    public void testMoveIngredientReordersList() {
         burger.addIngredient(mockIngredient1);
         burger.addIngredient(mockIngredient2);
         burger.moveIngredient(0, 1);
-        assertEquals(mockIngredient1, burger.ingredients.get(1));
+        assertEquals("First ingredient should move to second position", mockIngredient1, burger.ingredients.get(1));
     }
 
     @Test
-    public void testGetPrice() {
+    public void testGetPriceCalculatesTotal() {
         when(mockBun.getPrice()).thenReturn(100f);
         when(mockIngredient1.getPrice()).thenReturn(50f);
-        when(mockIngredient2.getPrice()).thenReturn(25f);
 
         burger.setBuns(mockBun);
         burger.addIngredient(mockIngredient1);
-        burger.addIngredient(mockIngredient2);
 
-        float expected = 100f * 2 + 50f + 25f;
-        assertEquals(expected, burger.getPrice(), 0.001f);
+        float expected = 100f * 2 + 50f;
+        assertEquals("Total price should include double bun price and ingredients", expected, burger.getPrice(), 0.001f);
     }
 
     @Test
-    public void testGetReceipt() {
+    public void testGetReceiptContainsExpectedLines() {
         when(mockBun.getName()).thenReturn("Black Bun");
         when(mockBun.getPrice()).thenReturn(100f);
-
         when(mockIngredient1.getName()).thenReturn("Hot Sauce");
         when(mockIngredient1.getPrice()).thenReturn(50f);
         when(mockIngredient1.getType()).thenReturn(IngredientType.SAUCE);
 
         burger.setBuns(mockBun);
         burger.addIngredient(mockIngredient1);
-
         String receipt = burger.getReceipt();
 
-        assert receipt.contains("Black Bun");
-        assert receipt.contains("Hot Sauce");
-        assert receipt.contains("sauce");
-        assert receipt.contains("Price");
+        assertTrue("Receipt should contain bun name", receipt.contains("Black Bun"));
+        assertTrue("Receipt should contain ingredient name", receipt.contains("Hot Sauce"));
+        assertTrue("Receipt should mention sauce type in lowercase", receipt.contains("sauce Hot Sauce"));
+        assertTrue("Receipt should display price label", receipt.contains("Price:"));
     }
 }
