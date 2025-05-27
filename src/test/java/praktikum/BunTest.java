@@ -43,3 +43,4 @@ public class BunTest {
         assertEquals("Bun price should match the input price", price, bun.getPrice(), 0.001f);
     }
 }
+

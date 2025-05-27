@@ -5,22 +5,16 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class BurgerTest {
 
     private Burger burger;
 
-    @Mock
-    private Bun mockBun;
-
-    @Mock
-    private Ingredient mockIngredient1;
-
-    @Mock
-    private Ingredient mockIngredient2;
+    @Mock private Bun mockBun;
+    @Mock private Ingredient mockIngredient1;
+    @Mock private Ingredient mockIngredient2;
 
     @Before
     public void setUp() {
@@ -36,7 +30,6 @@ public class BurgerTest {
 
     @Test
     public void testAddIngredientIncreasesList() {
-        when(mockIngredient1.getName()).thenReturn("Ingredient1");
         burger.addIngredient(mockIngredient1);
         assertEquals("Ingredients list size should be 1 after adding", 1, burger.ingredients.size());
     }
@@ -71,9 +64,7 @@ public class BurgerTest {
     @Test
     public void testGetReceiptContainsExpectedLines() {
         when(mockBun.getName()).thenReturn("Black Bun");
-        when(mockBun.getPrice()).thenReturn(100f);
         when(mockIngredient1.getName()).thenReturn("Hot Sauce");
-        when(mockIngredient1.getPrice()).thenReturn(50f);
         when(mockIngredient1.getType()).thenReturn(IngredientType.SAUCE);
 
         burger.setBuns(mockBun);
