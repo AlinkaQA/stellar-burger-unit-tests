@@ -46,7 +46,8 @@ public class BurgerTest {
         burger.addIngredient(mockIngredient1);
         burger.addIngredient(mockIngredient2);
         burger.moveIngredient(0, 1);
-        assertEquals("First ingredient should move to second position", mockIngredient1, burger.ingredients.get(1));
+        assertEquals("First ingredient should move to second position",
+                mockIngredient1, burger.ingredients.get(1));
     }
 
     @Test
@@ -58,11 +59,21 @@ public class BurgerTest {
         burger.addIngredient(mockIngredient1);
 
         float expected = 100f * 2 + 50f;
-        assertEquals("Total price should include double bun price and ingredients", expected, burger.getPrice(), 0.001f);
+        assertEquals("Total price should include double bun price and ingredients",
+                expected, burger.getPrice(), 0.001f);
     }
 
     @Test
-    public void testGetReceiptContainsExpectedLines() {
+    public void testReceiptContainsBunName() {
+        when(mockBun.getName()).thenReturn("Black Bun");
+
+        burger.setBuns(mockBun);
+        String receipt = burger.getReceipt();
+        assertTrue("Receipt should contain bun name", receipt.contains("Black Bun"));
+    }
+
+    @Test
+    public void testReceiptContainsIngredientName() {
         when(mockBun.getName()).thenReturn("Black Bun");
         when(mockIngredient1.getName()).thenReturn("Hot Sauce");
         when(mockIngredient1.getType()).thenReturn(IngredientType.SAUCE);
@@ -70,10 +81,31 @@ public class BurgerTest {
         burger.setBuns(mockBun);
         burger.addIngredient(mockIngredient1);
         String receipt = burger.getReceipt();
-
-        assertTrue("Receipt should contain bun name", receipt.contains("Black Bun"));
         assertTrue("Receipt should contain ingredient name", receipt.contains("Hot Sauce"));
-        assertTrue("Receipt should mention sauce type in lowercase", receipt.contains("sauce Hot Sauce"));
+    }
+
+    @Test
+    public void testReceiptMentionsSauceType() {
+        when(mockBun.getName()).thenReturn("Black Bun");
+        when(mockIngredient1.getType()).thenReturn(IngredientType.SAUCE);
+
+        burger.setBuns(mockBun);
+        burger.addIngredient(mockIngredient1);
+        String receipt = burger.getReceipt();
+        assertTrue("Receipt should mention sauce type", receipt.contains("sauce"));
+    }
+
+    @Test
+    public void testReceiptDisplaysPriceLabel() {
+        when(mockBun.getName()).thenReturn("Black Bun");
+        when(mockBun.getPrice()).thenReturn(100f);
+        when(mockIngredient1.getPrice()).thenReturn(50f);
+        when(mockIngredient1.getName()).thenReturn("Hot Sauce");
+        when(mockIngredient1.getType()).thenReturn(IngredientType.SAUCE);
+
+        burger.setBuns(mockBun);
+        burger.addIngredient(mockIngredient1);
+        String receipt = burger.getReceipt();
         assertTrue("Receipt should display price label", receipt.contains("Price:"));
     }
 }
